@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Repensar la evaluación en tiempos de inteligencia artificial — Guía práctica UFV</title>
+
+<!--
+  ============================================================
+  GUÍA UFV · Repensar la evaluación ante la IA · V1.6
+  ============================================================
+  CÓMO MODIFICAR ESTA WEB (para personas no programadas):
+
+  1) COLORES Y TIPOGRAFÍAS: ve al bloque ":root" más abajo.
+     Cambia los códigos de color (por ejemplo #1b3a5b) por los
+     oficiales UFV cuando los tengas. No toques los nombres
+     (--ufv-primary, etc.), solo el valor de la derecha.
+
+  2) TEXTOS DE SECCIONES: están escritos directamente en el HTML.
+     Busca el título de la sección y edita el texto que hay debajo.
+
+  3) CASOS, HERRAMIENTAS Y PREGUNTAS FRECUENTES: están en el
+     bloque <script> al final, en tres listas llamadas CASOS,
+     HERRAMIENTAS y FAQ. Edita el texto entre comillas. No borres
+     las comas ni las llaves { }.
+
+  4) LOGO UFV: busca el comentario "ZONA LOGO" en la cabecera.
+
+  5) GOOGLE FONTS: están desactivadas para que la web funcione
+     sin internet. Para activarlas, descomenta el bloque <link>
+     señalado más abajo.
+  ============================================================
+-->
+
+<!--
+  FUENTES: por defecto se usan fuentes del sistema (rápido y sin
+  conexión). Para usar las tipografías de la guía (Arimo, Playfair
+  Display, Roboto Slab), DESCOMENTA las dos líneas siguientes:
+-->
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+<!-- <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Roboto+Slab:wght@500;600;700&display=swap" rel="stylesheet"> -->
+
+<style>
+/* ===================== VARIABLES DE IDENTIDAD ===================== */
+/* Sustituye estos valores por los códigos oficiales UFV cuando los tengas. */
+:root{
+  --ufv-bg:        #faf9f7;   /* fondo claro */
+  --ufv-surface:   #ffffff;   /* tarjetas */
+  --ufv-text:      #1f2933;   /* texto principal oscuro */
+  --ufv-muted:     #5a6b7b;   /* grises cálidos / texto secundario */
+  --ufv-primary:   #1b3a5b;   /* acento institucional (azul UFV provisional) */
+  --ufv-secondary: #34597f;   /* azul secundario */
+  --ufv-accent:    #b8862f;   /* color de contraste para llamadas importantes */
+  --ufv-line:      #e7e2da;   /* líneas y bordes */
+  --ufv-soft:      #f1ede6;   /* fondos suaves */
+
+  /* Tipografías: si activas Google Fonts arriba, se usarán las primeras;
+     si no, se usan las del sistema automáticamente. */
+  --font-body:  "Arimo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-title: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-slab:  "Roboto Slab", Georgia, serif;
+
+  --maxw: 1080px;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(31,41,51,.04), 0 6px 24px rgba(31,41,51,.06);
+}
+
+/* ===================== BASE ===================== */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth; scroll-padding-top:84px}
+body{
+  margin:0; background:var(--ufv-bg); color:var(--ufv-text);
+  font-family:var(--font-body); font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%}
+a{color:var(--ufv-secondary)}
+h1,h2,h3,h4{font-family:var(--font-title); line-height:1.2; color:var(--ufv-primary); font-weight:700}
+h2{font-size:1.9rem; margin:0 0 .3em}
+h3{font-size:1.25rem; margin:0 0 .4em}
+.eyebrow{font-family:var(--font-slab); text-transform:uppercase; letter-spacing:.08em;
+  font-size:.78rem; color:var(--ufv-accent); font-weight:600; margin:0 0 .6rem}
+.lead{font-size:1.12rem; color:var(--ufv-muted)}
+.container{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+section{padding:68px 0; border-top:1px solid var(--ufv-line)}
+section:nth-child(even){background:linear-gradient(var(--ufv-bg),var(--ufv-bg))}
+.section-head{max-width:760px; margin-bottom:34px}
+
+/* ===================== NAVEGACIÓN ===================== */
+header.nav{
+  position:sticky; top:0; z-index:50; background:rgba(250,249,247,.92);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--ufv-line);
+}
+.nav-inner{max-width:var(--maxw); margin:0 auto; padding:10px 22px;
+  display:flex; align-items:center; gap:18px}
+.brand{display:flex; align-items:center; gap:12px; font-family:var(--font-slab);
+  font-weight:700; color:var(--ufv-primary); text-decoration:none; font-size:.95rem; white-space:nowrap}
+/* ZONA LOGO: sustituye este recuadro por <img src="logo-ufv.svg" alt="UFV"> */
+.logo-box{width:42px; height:42px; border:1.5px solid var(--ufv-primary); border-radius:8px;
+  display:grid; place-items:center; font-size:.7rem; color:var(--ufv-primary); font-weight:700}
+.nav-links{display:flex; gap:4px; flex-wrap:wrap; margin-left:auto}
+.nav-links a{font-size:.86rem; color:var(--ufv-muted); text-decoration:none; padding:7px 10px;
+  border-radius:8px; white-space:nowrap}
+.nav-links a:hover{background:var(--ufv-soft); color:var(--ufv-primary)}
+.nav-toggle{display:none; margin-left:auto; background:none; border:1px solid var(--ufv-line);
+  border-radius:8px; padding:8px 12px; cursor:pointer; font-size:1.1rem; color:var(--ufv-primary)}
+
+/* ===================== BOTONES ===================== */
+.btn{display:inline-block; font-family:var(--font-body); font-weight:600; font-size:.95rem;
+  padding:12px 20px; border-radius:10px; border:1.5px solid transparent; cursor:pointer;
+  text-decoration:none; transition:.15s; background:var(--ufv-primary); color:#fff}
+.btn:hover{background:var(--ufv-secondary)}
+.btn.outline{background:transparent; color:var(--ufv-primary); border-color:var(--ufv-primary)}
+.btn.outline:hover{background:var(--ufv-soft)}
+.btn.accent{background:var(--ufv-accent); color:#fff}
+.btn.accent:hover{filter:brightness(.94)}
+.btn.small{padding:8px 14px; font-size:.85rem}
+
+/* ===================== HERO ===================== */
+.hero{padding:78px 0 64px; border-top:none}
+.hero h1{font-size:clamp(2.1rem,5vw,3.3rem); margin:.2em 0 .35em; max-width:14ch}
+.hero .sub{font-size:1.18rem; color:var(--ufv-muted); max-width:60ch; margin-bottom:1.6em}
+.hero-actions{display:flex; gap:12px; flex-wrap:wrap}
+
+/* ===================== TARJETAS ===================== */
+.grid{display:grid; gap:18px}
+.cols-2{grid-template-columns:repeat(2,1fr)}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.cols-4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--ufv-surface); border:1px solid var(--ufv-line); border-radius:var(--radius);
+  padding:22px; box-shadow:var(--shadow)}
+.card h3{font-family:var(--font-slab); font-size:1.05rem}
+.card .num{font-family:var(--font-slab); font-weight:700; color:var(--ufv-accent); font-size:.85rem}
+.card .small{font-size:.9rem; color:var(--ufv-muted)}
+
+/* Tarjeta comparativa atropello / entrenamiento */
+.compare{display:grid; grid-template-columns:1fr 1fr; gap:0; border-radius:var(--radius);
+  overflow:hidden; border:1px solid var(--ufv-line); box-shadow:var(--shadow)}
+.compare>div{padding:24px}
+.compare .bad{background:#fbf3ef}
+.compare .good{background:#eef4ef}
+.compare h3{font-family:var(--font-slab)}
+.tag{display:inline-block; font-family:var(--font-slab); font-size:.72rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.05em; padding:4px 10px; border-radius:999px; margin-bottom:10px}
+.tag.bad{background:#e7c9bd; color:#8a3a1c}
+.tag.good{background:#cfe3d3; color:#1f5a36}
+
+/* ===================== CHECKLIST ===================== */
+.checklist{background:var(--ufv-surface); border:1px solid var(--ufv-line);
+  border-radius:var(--radius); padding:8px 8px 18px; box-shadow:var(--shadow)}
+.check-item{display:flex; gap:14px; align-items:flex-start; padding:16px;
+  border-bottom:1px solid var(--ufv-line)}
+.check-item:last-child{border-bottom:none}
+.check-item input{width:22px; height:22px; margin-top:3px; accent-color:var(--ufv-primary); flex:none; cursor:pointer}
+.check-item label{cursor:pointer}
+.check-item .q{font-weight:600; font-family:var(--font-slab); color:var(--ufv-primary)}
+.check-item input:checked + label .q{text-decoration:line-through; color:var(--ufv-muted)}
+.check-actions{display:flex; gap:10px; flex-wrap:wrap; padding:16px 16px 0}
+
+/* ===================== INFOGRAFÍA 5 NIVELES ===================== */
+.levels{display:grid; grid-template-columns:repeat(5,1fr); gap:0; border-radius:var(--radius);
+  overflow:hidden; border:1px solid var(--ufv-line)}
+.level{padding:18px 16px; border-right:1px solid var(--ufv-line); background:var(--ufv-surface)}
+.level:last-child{border-right:none}
+.level .n{font-family:var(--font-slab); font-weight:700; font-size:1.5rem; color:var(--ufv-accent)}
+.level h4{font-family:var(--font-slab); font-size:.98rem; margin:.3em 0; color:var(--ufv-primary)}
+.level p{font-size:.85rem; color:var(--ufv-muted); margin:0}
+.level-bar{height:8px; border-radius:4px; margin:34px 0 6px;
+  background:linear-gradient(90deg,#cfe0ef,var(--ufv-primary))}
+
+/* Aviso / nota */
+.note{border-left:4px solid var(--ufv-accent); background:var(--ufv-soft);
+  padding:14px 18px; border-radius:0 10px 10px 0; font-size:.95rem; color:var(--ufv-text)}
+.note strong{color:var(--ufv-primary)}
+
+/* ===================== ANTES / DESPUÉS ===================== */
+.beforeafter{display:grid; grid-template-columns:1fr auto 1fr; gap:0; align-items:stretch;
+  border:1px solid var(--ufv-line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow)}
+.beforeafter .col{padding:22px}
+.beforeafter .before{background:#fbf3ef}
+.beforeafter .after{background:#eef4ef}
+.beforeafter .arrow{display:grid; place-items:center; background:var(--ufv-surface);
+  padding:0 16px; font-size:1.6rem; color:var(--ufv-accent)}
+
+/* ===================== FILTROS ===================== */
+.filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px}
+.chip{font-family:var(--font-body); font-size:.85rem; padding:7px 14px; border-radius:999px;
+  border:1.5px solid var(--ufv-line); background:var(--ufv-surface); color:var(--ufv-muted); cursor:pointer}
+.chip:hover{border-color:var(--ufv-secondary)}
+.chip.active{background:var(--ufv-primary); color:#fff; border-color:var(--ufv-primary)}
+.filter-label{font-family:var(--font-slab); font-size:.78rem; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--ufv-muted); align-self:center; margin-right:4px}
+
+/* Tarjeta de caso */
+.case{display:flex; flex-direction:column; gap:8px}
+.case .meta{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px}
+.case .meta span{font-family:var(--font-slab); font-size:.7rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.04em; padding:3px 9px; border-radius:999px;
+  background:var(--ufv-soft); color:var(--ufv-secondary)}
+.case dl{margin:0; font-size:.9rem}
+.case dt{font-family:var(--font-slab); font-size:.74rem; text-transform:uppercase;
+  letter-spacing:.04em; color:var(--ufv-accent); margin-top:8px}
+.case dd{margin:2px 0 0; color:var(--ufv-text)}
+
+/* ===================== ACORDEÓN FAQ ===================== */
+.acc{border:1px solid var(--ufv-line); border-radius:var(--radius); overflow:hidden;
+  background:var(--ufv-surface); box-shadow:var(--shadow)}
+.acc-item{border-bottom:1px solid var(--ufv-line)}
+.acc-item:last-child{border-bottom:none}
+.acc-btn{width:100%; text-align:left; background:none; border:none; cursor:pointer;
+  padding:18px 20px; font-family:var(--font-slab); font-weight:600; font-size:1rem;
+  color:var(--ufv-primary); display:flex; justify-content:space-between; gap:14px; align-items:center}
+.acc-btn:hover{background:var(--ufv-soft)}
+.acc-btn .ico{flex:none; transition:.2s; color:var(--ufv-accent)}
+.acc-btn[aria-expanded="true"] .ico{transform:rotate(45deg)}
+.acc-panel{display:none; padding:0 20px 20px}
+.acc-panel.open{display:block}
+.acc-panel .layer{margin-top:12px}
+.acc-panel .layer b{font-family:var(--font-slab); color:var(--ufv-secondary); font-size:.82rem;
+  text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:2px}
+
+/* ===================== BLOQUE COPIABLE ===================== */
+.copybox{position:relative; background:var(--ufv-soft); border:1px dashed var(--ufv-line);
+  border-radius:10px; padding:18px 18px; font-size:.92rem; white-space:pre-wrap}
+.copybox .copy{position:absolute; top:10px; right:10px}
+
+/* ===================== BIBLIOGRAFÍA ===================== */
+.biblio{font-size:.92rem; color:var(--ufv-text)}
+.biblio li{margin-bottom:14px; padding-left:0}
+.biblio a{word-break:break-word}
+
+/* ===================== CONTACTO ===================== */
+.contact{background:var(--ufv-primary); color:#fff; border-radius:var(--radius); padding:40px;
+  text-align:center}
+.contact h2{color:#fff}
+.contact p{color:#dce6f0; max-width:50ch; margin:0 auto 1.4em}
+.contact .btn{background:var(--ufv-accent)}
+
+footer{padding:34px 0; text-align:center; color:var(--ufv-muted); font-size:.85rem;
+  border-top:1px solid var(--ufv-line)}
+
+/* Etiqueta "segunda capa / recurso" */
+.pill{display:inline-block; font-family:var(--font-slab); font-size:.7rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:.05em; padding:3px 9px; border-radius:6px;
+  background:var(--ufv-soft); color:var(--ufv-accent); margin-bottom:8px}
+
+/* Toast aviso copiado */
+.toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--ufv-primary); color:#fff; padding:12px 20px; border-radius:10px;
+  opacity:0; pointer-events:none; transition:.25s; z-index:99; font-size:.9rem}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width:880px){
+  .cols-4{grid-template-columns:repeat(2,1fr)}
+  .cols-3{grid-template-columns:1fr}
+  .levels{grid-template-columns:1fr 1fr}
+  .level:nth-child(odd){border-right:1px solid var(--ufv-line)}
+  .nav-links{display:none; position:absolute; top:62px; left:0; right:0; background:var(--ufv-bg);
+    flex-direction:column; padding:10px 16px; border-bottom:1px solid var(--ufv-line); margin:0}
+  .nav-links.open{display:flex}
+  .nav-toggle{display:block}
+  .brand{margin-right:auto}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .cols-2,.cols-4{grid-template-columns:1fr}
+  .compare,.beforeafter{grid-template-columns:1fr}
+  .beforeafter .arrow{padding:10px; transform:rotate(90deg)}
+  .levels{grid-template-columns:1fr}
+  .level{border-right:none; border-bottom:1px solid var(--ufv-line)}
+  section{padding:48px 0}
+  .contact{padding:28px}
+}
+/* Accesibilidad: foco visible por teclado */
+a:focus-visible, button:focus-visible, input:focus-visible, .chip:focus-visible{
+  outline:3px solid var(--ufv-accent); outline-offset:2px}
+</style>
+</head>
+
+<body>
+
+<!-- ============ NAVEGACIÓN SUPERIOR FIJA ============ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#inicio">
+      <!-- ZONA LOGO: reemplaza .logo-box por <img src="logo-ufv.svg" alt="Universidad Francisco de Vitoria" style="height:42px"> -->
+      <span class="logo-box">UFV</span>
+      <span>Evaluación &amp; IA</span>
+    </a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" onclick="toggleNav()">☰</button>
+    <nav class="nav-links" id="navLinks" aria-label="Secciones">
+      <a href="#partida">Punto de partida</a>
+      <a href="#preguntas">5 preguntas</a>
+      <a href="#principios">Principios</a>
+      <a href="#niveles">Niveles</a>
+      <a href="#rediseno">Rediseñar</a>
+      <a href="#apoyo">IA de apoyo</a>
+      <a href="#casos">Casos</a>
+      <a href="#comunicar">Comunicar</a>
+      <a href="#faq">Dudas</a>
+      <a href="#biblio">Bibliografía</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO / PUNTO DE PARTIDA ============ -->
+<section class="hero" id="inicio">
+  <div class="container">
+    <p class="eyebrow">Guía práctica · Universidad Francisco de Vitoria · V1.6</p>
+    <h1>Repensar la evaluación en tiempos de inteligencia artificial</h1>
+    <p class="sub">Guía práctica para revisar, rediseñar y comunicar la evaluación universitaria ante la inteligencia artificial.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#preguntas">Revisar mi evaluación</a>
+      <a class="btn outline" href="#niveles">Ver niveles de uso de IA</a>
+      <a class="btn outline" href="#casos">Explorar casos</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 1 · PUNTO DE PARTIDA ============ -->
+<section id="partida">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">1 · Punto de partida</p>
+      <p class="lead">La inteligencia artificial está transformando la evaluación universitaria: facilita la generación de trabajos, dificulta la verificación de autoría y obliga a repensar qué, cómo y para qué evaluamos. Este cambio debe abordarse desde un enfoque centrado en la persona, la inclusión, la equidad, la responsabilidad docente y la protección del aprendizaje real.</p>
+    </div>
+
+    <p style="max-width:760px; margin-bottom:32px;">La cuestión no es solo cómo usar la inteligencia artificial en la evaluación, sino cómo <strong>rediseñar la evaluación ante la inteligencia artificial</strong>: qué actividades conviene mantener sin IA, cuáles pueden enriquecerse con ella y cuáles deben transformarse para evaluar mejor el aprendizaje real.</p>
+
+    <!-- Idea central destacada -->
+    <div class="note" style="margin-bottom:32px; font-size:1.05rem;">
+      <strong>Idea clave.</strong> El reto no es solo detectar usos indebidos, sino enseñar a distinguir entre dos modos de adopción de la IA en el aprendizaje.
+    </div>
+
+    <!-- ARTEFACTO VISUAL 1: tarjeta comparativa -->
+    <div class="compare" style="margin-bottom:38px;">
+      <div class="bad">
+        <span class="tag bad">Evitar</span>
+        <h3>Atropello cognitivo</h3>
+        <p class="small">Delegar en la inteligencia artificial la memoria, el pensamiento, la autoría o el juicio. El producto aparece, pero el aprendizaje desaparece.</p>
+      </div>
+      <div class="good">
+        <span class="tag good">Buscar</span>
+        <h3>Entrenamiento cognitivo deliberado</h3>
+        <p class="small">Decidir conscientemente qué puede apoyar la IA y qué debe seguir haciendo el alumno para aprender. El alumno mantiene la agencia.</p>
+      </div>
+    </div>
+
+    <!-- ARTEFACTO VISUAL 2: cuatro tarjetas de contexto -->
+    <div class="grid cols-4">
+      <div class="card"><span class="num">01</span><h3>Nuevo contexto</h3><p class="small">La inteligencia artificial ya está en el aula y en el trabajo académico de muchos estudiantes.</p></div>
+      <div class="card"><span class="num">02</span><h3>Riesgo central</h3><p class="small">Pérdida de autoría, de pensamiento y de aprendizaje significativo.</p></div>
+      <div class="card"><span class="num">03</span><h3>Respuesta docente</h3><p class="small">Rediseñar la evaluación, explicitar los usos y acompañar al estudiante.</p></div>
+      <div class="card"><span class="num">04</span><h3>Compromiso UFV</h3><p class="small">Huella humana, integridad, sentido y vínculo educativo.</p></div>
+    </div>
+
+    <!-- RECURSO DESCARGABLE (segunda capa) -->
+    <div class="card" style="margin-top:24px; display:flex; gap:18px; align-items:center; flex-wrap:wrap; justify-content:space-between;">
+      <div>
+        <span class="pill">Recurso descargable</span>
+        <h3 style="margin:0;">Infografía «Educar en el umbral sin perder el sentido»</h3>
+        <p class="small" style="margin:.3em 0 0;">Pendiente de adjuntar el archivo final (ver tareas de producción).</p>
+      </div>
+      <!-- TAREA PRODUCCIÓN: sustituir "#" por la URL real de la infografía -->
+      <a class="btn outline small" href="#" aria-disabled="true">Descargar infografía</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 2 · 5 PREGUNTAS (CHECKLIST) ============ -->
+<section id="preguntas">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">2 · Antes de cambiar nada</p>
+      <h2>5 preguntas para repensar mi evaluación</h2>
+      <p class="lead">Antes de rediseñar una actividad o introducir IA, conviene revisar qué aprendizaje se quiere proteger, qué evidencias se necesitan y qué papel debe mantener el alumno.</p>
+    </div>
+
+    <!-- ARTEFACTO VISUAL 3: checklist interactivo -->
+    <div class="checklist" id="checklist">
+      <div class="check-item">
+        <input type="checkbox" id="q1">
+        <label for="q1"><span class="q">Propósito.</span> ¿Qué aprendizaje esencial quiero comprobar o acompañar?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="q2">
+        <label for="q2"><span class="q">Delegación.</span> ¿Qué parte del aprendizaje no debería delegarse nunca en la IA?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="q3">
+        <label for="q3"><span class="q">Vulnerabilidad.</span> ¿Alguna tarea podría hacerla casi entera una IA?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="q4">
+        <label for="q4"><span class="q">Evidencias.</span> ¿Cómo comprobaré autoría, razonamiento, proceso y aprendizaje real?</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="q5">
+        <label for="q5"><span class="q">Decisión docente.</span> ¿Esta actividad debe ser sin IA, con IA guiada o rediseñada ante la IA?</label>
+      </div>
+      <div class="check-actions">
+        <button class="btn small" onclick="copyChecklist()">Copiar checklist</button>
+        <button class="btn outline small" onclick="resetChecklist()">Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- Segunda capa: preguntas de apoyo -->
+    <details class="card" style="margin-top:20px;">
+      <summary style="cursor:pointer; font-family:var(--font-slab); font-weight:600; color:var(--ufv-primary);">Ver preguntas de apoyo</summary>
+      <ul style="margin:14px 0 0; color:var(--ufv-muted);">
+        <li>¿La IA ayuda aquí a comprender, crear o analizar, o solo a acelerar?</li>
+        <li>¿Cómo hago visible el proceso cognitivo del alumno, no solo el resultado?</li>
+        <li>¿Qué aportación personal debe quedar clara en el trabajo del estudiante?</li>
+        <li>¿Qué grado de delegación permito y qué responsabilidad humana quiero preservar?</li>
+      </ul>
+    </details>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 3 · PRINCIPIOS BÁSICOS ============ -->
+<section id="principios">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">3 · Principios básicos</p>
+      <h2>Principios para usar o limitar la IA en evaluación</h2>
+    </div>
+
+    <div class="grid cols-3">
+      <div class="card"><h3>Responsabilidad docente</h3><p class="small">La decisión evaluadora debe mantenerse en el ámbito de responsabilidad del profesor.</p></div>
+      <div class="card"><h3>No siempre IA</h3><p class="small">No toda evaluación debe incorporar inteligencia artificial.</p></div>
+      <div class="card"><h3>IA como apoyo</h3><p class="small">Puede ayudar a diseñar, revisar, adaptar o enriquecer actividades.</p></div>
+      <div class="card"><h3>Calificación humana</h3><p class="small">La calificación final permanece bajo juicio docente.</p></div>
+      <div class="card"><h3>Transparencia</h3><p class="small">El uso de IA debe ser transparente cuando afecte al aprendizaje.</p></div>
+      <div class="card"><h3>Proteger lo esencial</h3><p class="small">La evaluación debe proteger autoría, esfuerzo, trazabilidad y rigor.</p></div>
+      <div class="card"><h3>Tareas sin IA</h3><p class="small">Siguen siendo necesarias cuando evalúan aprendizajes esenciales.</p></div>
+      <div class="card"><h3>Quién piensa y responde</h3><p class="small">El criterio no es solo si se usa IA, sino quién piensa, decide y responde del resultado.</p></div>
+      <div class="card"><h3>Acompañar</h3><p class="small">El profesor sigue acompañando, interpretando y tomando decisiones.</p></div>
+    </div>
+
+    <!-- Criterio pedagógico UFV -->
+    <div class="note" style="margin-top:30px;">
+      <strong>Criterio pedagógico UFV.</strong> La prioridad es pasar de la sospecha a la formación de la integridad: más vínculo y menos fiscalización; pedagogía antes que sanción; aprendizaje antes que resultado; huella humana antes que producto generado.
+    </div>
+
+    <!-- Cinco mínimos docentes -->
+    <h3 style="margin:34px 0 14px;">Cinco mínimos docentes</h3>
+    <div class="grid cols-2">
+      <div class="card small">Explicar en clase qué usos de IA están permitidos y cuáles no.</div>
+      <div class="card small">Comentar el apartado de la guía docente referido a la IA.</div>
+      <div class="card small">Crear en Canvas un espacio visible con las normas de uso de IA de la asignatura.</div>
+      <div class="card small">Diferenciar qué tareas son formativas y cuáles cuentan para la calificación.</div>
+      <div class="card small">Asegurar evidencias sólidas en las actividades con más peso en la nota.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 4 · TRES NIVELES + INFOGRAFÍA ============ -->
+<section id="niveles">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">4 · Decisión</p>
+      <h2>Tres niveles de decisión ante la IA en evaluación</h2>
+      <p class="lead">La clave no es solo permitir o prohibir, sino valorar qué aprendizaje se protege, qué responsabilidad mantiene el alumno y qué papel conserva el docente.</p>
+    </div>
+
+    <div class="grid cols-3">
+      <div class="card">
+        <span class="num">Nivel 1</span>
+        <h3>Sin inteligencia artificial</h3>
+        <p class="small">Para comprobar aprendizajes esenciales que no deben delegarse: comprensión, razonamiento propio, expresión personal, memoria significativa, juicio crítico, desempeño oral o práctica supervisada. No se excluye la IA por miedo, sino para proteger un espacio necesario de aprendizaje humano.</p>
+      </div>
+      <div class="card">
+        <span class="num">Nivel 2</span>
+        <h3>Inteligencia artificial guiada</h3>
+        <p class="small">Para enseñar a usar la IA sin sustituir el pensamiento: preguntar, contrastar, revisar, detectar errores, comparar respuestas, mejorar borradores o documentar el proceso. El profesor define para qué, en qué fases, con qué límites y qué evidencias se entregan.</p>
+      </div>
+      <div class="card">
+        <span class="num">Nivel 3</span>
+        <h3>IA abierta y responsable</h3>
+        <p class="small">Para contextos avanzados o profesionales donde interesa evaluar cómo usa la IA el alumno sin perder agencia ni responsabilidad. Debe declarar su uso, justificar decisiones, verificar resultados y demostrar qué aporta él que la IA no puede aportar.</p>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:24px;">
+      <strong>Uso técnico y lingüístico.</strong> La IA puede usarse solo para corregir forma, ortografía, estilo, traducción o claridad de un borrador original del alumno. Este uso se limita a la mejora expresiva y no sustituye el pensamiento, la estructura argumental ni la aportación intelectual.
+    </div>
+
+    <!-- ARTEFACTO VISUAL 4: infografía horizontal de 5 niveles -->
+    <h3 style="margin:40px 0 6px;">Escala UFV de uso de IA · 5 niveles</h3>
+    <p class="small" style="margin:0 0 16px; color:var(--ufv-muted);">Escala complementaria adaptada a partir de la propuesta de Leon Furze y colaboradores.</p>
+    <div class="levels">
+      <div class="level"><div class="n">1</div><h4>Sin IA</h4><div class="level-bar"></div><p>La tarea se realiza sin asistencia de IA.</p></div>
+      <div class="level"><div class="n">2</div><h4>Planificación</h4><div class="level-bar"></div><p>Ayuda en lluvia de ideas, búsqueda inicial o planificación, no en el producto final.</p></div>
+      <div class="level"><div class="n">3</div><h4>Colaboración</h4><div class="level-bar"></div><p>Apoya partes del proceso, siempre con revisión crítica del estudiante.</p></div>
+      <div class="level"><div class="n">4</div><h4>IA amplia</h4><div class="level-bar"></div><p>Uso extenso para completar la tarea; el alumno dirige, verifica y justifica.</p></div>
+      <div class="level"><div class="n">5</div><h4>Exploración</h4><div class="level-bar"></div><p>La IA forma parte del reto creativo o profesional, con uso avanzado y responsable.</p></div>
+    </div>
+
+    <div class="note" style="margin-top:18px;">
+      <strong>La escala no es permiso automático.</strong> Cada actividad debe indicar claramente el nivel permitido. Este nivel 3/5 solo debe usarse cuando el objetivo de aprendizaje incluya explícitamente el uso crítico, profesional o creativo de la IA.
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 5 · REDISEÑAR UNA ACTIVIDAD ============ -->
+<section id="rediseno">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">5 · Rediseñar</p>
+      <h2>Rediseñar una actividad afectada por la IA</h2>
+      <p class="lead">El objetivo no es solo «blindar» la tarea frente a la IA, sino mejorarla pedagógicamente.</p>
+    </div>
+
+    <!-- Paso a paso -->
+    <div class="grid cols-3" style="margin-bottom:30px;">
+      <div class="card"><span class="num">Paso 1</span><p class="small">Identificar qué parte podría hacer la IA.</p></div>
+      <div class="card"><span class="num">Paso 2</span><p class="small">Definir qué aprendizaje debe demostrar personalmente el alumno.</p></div>
+      <div class="card"><span class="num">Paso 3</span><p class="small">Decidir si la actividad es sin IA, con IA guiada o con IA declarada.</p></div>
+      <div class="card"><span class="num">Paso 4</span><p class="small">Añadir evidencias de proceso: borradores, decisiones, fuentes, reflexión, defensa oral o portfolio.</p></div>
+      <div class="card"><span class="num">Paso 5</span><p class="small">Ajustar la rúbrica para valorar razonamiento, contraste, autoría y revisión.</p></div>
+      <div class="card" style="background:var(--ufv-soft);"><span class="num">Pregunta clave</span><p class="small">¿Esta actividad obliga al alumno a pensar, decidir, justificar, crear o defender algo que no puede delegar sin dejar de aprender?</p></div>
+    </div>
+
+    <!-- ARTEFACTO VISUAL 6: cómo comprobar independencia cognitiva -->
+    <div class="card" style="margin-bottom:30px;">
+      <h3>Cómo comprobar la independencia cognitiva</h3>
+      <p class="small">Cuando una tarea pueda resolverse fácilmente con IA, introduce momentos donde el alumno demuestre comprensión sin depender de la herramienta:</p>
+      <ul class="small" style="margin:8px 0 0;">
+        <li>Corregir una respuesta generada por IA.</li>
+        <li>Justificar por qué acepta o rechaza una propuesta.</li>
+        <li>Transferir un concepto a un caso nuevo.</li>
+        <li>Defender oralmente una decisión.</li>
+        <li>Explicar el proceso seguido sin apoyo automático.</li>
+      </ul>
+    </div>
+
+    <!-- ARTEFACTO VISUAL 5: bloque antes / después -->
+    <h3 style="margin:0 0 12px;">Antes / Después</h3>
+    <div class="beforeafter" style="margin-bottom:30px;">
+      <div class="col before">
+        <span class="tag bad">Antes</span>
+        <h3>Tarea vulnerable</h3>
+        <p class="small">«Redacta un ensayo de 1.500 palabras sobre el tema X y entrégalo en PDF.» Solo se evalúa el producto final, fácilmente generable con IA.</p>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="col after">
+        <span class="tag good">Después</span>
+        <h3>Tarea con proceso y defensa</h3>
+        <p class="small">Borrador inicial + declaración de uso de IA + verificación de fuentes + cambios justificados + defensa oral breve. Mayor peso al proceso que al producto.</p>
+      </div>
+    </div>
+
+    <!-- ARTEFACTO VISUAL 7: rúbrica descargable (segunda capa) -->
+    <div class="card" style="border-color:var(--ufv-accent);">
+      <span class="pill">Plantilla editable</span>
+      <h3>Rúbrica de trazabilidad, autoría y uso responsable de IA</h3>
+      <p class="small">Lógica: el producto final tiene menor peso; el proceso, la verificación, la declaración de uso y la defensa tienen mayor peso.</p>
+      <div class="grid cols-4" style="margin:14px 0;">
+        <div class="card small"><b>1. Transparencia y atribución</b><br>Declara qué hizo la IA y qué hizo el alumno.</div>
+        <div class="card small"><b>2. Verificación</b><br>Contrasta fuentes, detecta sesgos y corrige salidas dudosas o alucinaciones.</div>
+        <div class="card small"><b>3. Defensa y personalización</b><br>Explica oralmente sus decisiones y conecta con su contexto.</div>
+        <div class="card small"><b>4. Proceso iterativo</b><br>Muestra evolución, borradores, cambios y mejora del pensamiento.</div>
+      </div>
+      <p class="small" style="color:var(--ufv-muted);">Si hay dudas razonables sobre la autoría, puede solicitarse una defensa oral conforme a la guía docente. No como sanción, sino como oportunidad de verificar aprendizaje y apropiación personal.</p>
+      <!-- El botón genera y descarga una plantilla de texto editable. Edita el contenido en la función downloadRubrica() del script. -->
+      <button class="btn accent small" onclick="downloadRubrica()">Descargar plantilla de rúbrica</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 6 · IA COMO APOYO ============ -->
+<section id="apoyo">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">6 · Apoyo docente</p>
+      <h2>La IA como apoyo en los momentos de la evaluación</h2>
+      <p class="lead">Siempre como apoyo al diseño, seguimiento o mejora de la evaluación; nunca como sustitución del juicio docente.</p>
+    </div>
+
+    <!-- 6.1 / 6.2 / 6.3 como tarjetas con segunda capa (details) -->
+    <div class="grid cols-3" style="margin-bottom:14px;">
+
+      <details class="card">
+        <summary style="cursor:pointer; font-family:var(--font-slab); font-weight:700; color:var(--ufv-primary); font-size:1.05rem;">6.1 · Evaluación diagnóstica</summary>
+        <p class="small" style="margin-top:10px;">Conocer el punto de partida del grupo: conocimientos previos, errores frecuentes, nivel de comprensión y necesidades iniciales. Sin impacto en la calificación.</p>
+        <p class="small"><b>Usos:</b> diseño de actividades diagnósticas, detección de patrones, apoyo a la autorreflexión, simulaciones formativas, identificación temprana de necesidades.</p>
+        <p class="small"><b>Límites:</b> no calificar, no clasificar automáticamente, no sustituir el juicio docente, no hacer inferencias emocionales, no decidir grupos ni itinerarios.</p>
+        <p class="small" style="color:var(--ufv-muted);"><b>Herramientas:</b> ChatGPT / Claude / Gemini · Teach en M365 Copilot · Wayground/Quizizz.</p>
+      </details>
+
+      <details class="card">
+        <summary style="cursor:pointer; font-family:var(--font-slab); font-weight:700; color:var(--ufv-primary); font-size:1.05rem;">6.2 · Evaluación formativa</summary>
+        <p class="small" style="margin-top:10px;">Acompañar el proceso: retroalimentación, mejora de borradores, autoevaluación, coevaluación, explicación de errores y propuestas de mejora. Multiplica oportunidades de práctica sin convertir cada paso en nota.</p>
+        <p class="small"><b>Usos:</b> feedback inicial que el profesor revisa, ejercicios de mejora, comparar versiones, autoevaluación/coevaluación, convertir salidas de IA en material de crítica, repaso antes de una prueba.</p>
+        <p class="small"><b>Límite clave:</b> acompaña, pero no sustituye el juicio docente ni la reflexión del alumno.</p>
+        <p class="small" style="color:var(--ufv-muted);"><b>Herramientas:</b> ChatGPT / Claude / Gemini · NotebookLM · Genially / Canva.</p>
+      </details>
+
+      <details class="card">
+        <summary style="cursor:pointer; font-family:var(--font-slab); font-weight:700; color:var(--ufv-primary); font-size:1.05rem;">6.3 · Evaluación sumativa</summary>
+        <p class="small" style="margin-top:10px;">Revisar rúbricas, contrastar criterios, analizar resultados generales o preparar evidencias complementarias. Nunca para delegar la calificación final.</p>
+        <p class="small"><b>Criterio ético:</b> si la IA propone una valoración, existe riesgo de sesgo de anclaje. Su uso debe limitarse al diseño, revisión o contraste, no a la decisión evaluadora.</p>
+        <p class="small">La retroalimentación tiene más valor cuando el estudiante reconoce en ella el criterio y el acompañamiento del profesor.</p>
+        <p class="small" style="color:var(--ufv-muted);"><b>Herramientas:</b> ChatGPT / Claude / Gemini · Teach en M365 Copilot · Elicit / Consensus / Scite.</p>
+      </details>
+    </div>
+
+    <!-- 6.4 diseño de instrumentos -->
+    <details class="card" style="margin-bottom:24px;">
+      <summary style="cursor:pointer; font-family:var(--font-slab); font-weight:700; color:var(--ufv-primary);">6.4 · Diseño de instrumentos de evaluación <span class="pill" style="margin:0;">Segunda capa</span></summary>
+      <p class="small" style="margin-top:10px;">La IA puede ayudar a diseñar tareas, rúbricas, listas de cotejo, bancos de preguntas o variantes. Su valor: reducir carga operativa sin renunciar al criterio docente.</p>
+      <ul class="small"><li>Diseñar tareas equivalentes y variantes por dificultad.</li><li>Preparar rúbricas y listas de cotejo.</li><li>Generar bancos de preguntas.</li><li>Personalizar opciones de aprendizaje sin usar datos personales.</li></ul>
+      <p class="small note"><strong>Precaución.</strong> No introducir datos personales del alumnado ni construir perfiles individuales automatizados. Trabajar solo con descripciones generales del grupo.</p>
+      <div class="grid cols-3" style="margin-top:12px;">
+        <div class="card small"><b>Asistente</b><br>Banco de preguntas</div>
+        <div class="card small"><b>Asistente</b><br>Exposición oral</div>
+        <div class="card small"><b>Asistente</b><br>Rúbricas</div>
+      </div>
+    </details>
+
+    <!-- 6.5 herramientas filtrables -->
+    <h3 style="margin:8px 0 6px;">6.5 · Herramientas según necesidad docente</h3>
+    <p class="small" style="color:var(--ufv-muted); margin:0 0 16px;">Filtra por la necesidad que quieres resolver. La pregunta de fondo: ¿qué problema docente quiero resolver y qué herramienta me ayuda sin debilitar el aprendizaje, la autoría ni el papel del profesor?</p>
+
+    <div class="filters" id="toolFilters" role="group" aria-label="Filtrar herramientas">
+      <span class="filter-label">Necesidad:</span>
+      <!-- Los botones se generan automáticamente desde el script -->
+    </div>
+    <div class="grid cols-3" id="toolGrid"><!-- Tarjetas generadas por JavaScript --></div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 7 · CASOS DE USO ============ -->
+<section id="casos">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">7 · Casos</p>
+      <h2>Casos de uso y experiencias reales</h2>
+      <p class="lead">Fichas aplicadas, filtrables por tipo de evaluación y nivel de uso de IA. No es un listado largo: empieza por los casos prioritarios y amplía si lo necesitas.</p>
+    </div>
+
+    <!-- Filtro por tipo de evaluación -->
+    <div class="filters" id="caseTypeFilters" role="group" aria-label="Filtrar por tipo de evaluación">
+      <span class="filter-label">Tipo:</span>
+    </div>
+    <!-- Filtro por nivel de uso -->
+    <div class="filters" id="caseLevelFilters" role="group" aria-label="Filtrar por nivel de uso">
+      <span class="filter-label">Nivel:</span>
+    </div>
+
+    <div class="grid cols-3" id="caseGrid"><!-- Tarjetas generadas por JavaScript --></div>
+
+    <div style="text-align:center; margin-top:24px;">
+      <button class="btn outline" id="moreCases" onclick="toggleMoreCases()">Ver más casos</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 8 · COMUNICAR AL ESTUDIANTE ============ -->
+<section id="comunicar">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">8 · Comunicar</p>
+      <h2>Cómo comunicarlo al estudiante</h2>
+      <p class="lead">El objetivo no es solo evitar sanciones, sino aprender mejor. Un uso inadecuado de la IA reduce el esfuerzo intelectual, debilita la autoría e impide al alumno detectar sus propios errores.</p>
+    </div>
+
+    <div class="grid cols-2" style="margin-bottom:24px;">
+      <div class="card">
+        <h3>Seis puntos para tus actividades y guías</h3>
+        <ul class="small">
+          <li>Qué uso de IA está permitido.</li>
+          <li>Qué uso no está permitido.</li>
+          <li>Qué parte debe hacerse personalmente.</li>
+          <li>Cómo debe declararse.</li>
+          <li>Qué evidencias se pedirán.</li>
+          <li>Cómo se valorará el proceso y no solo el resultado.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Preguntas para abrir conversación en clase</h3>
+        <ul class="small">
+          <li>¿Qué diferencia hay entre dejarte ayudar e invalidar tu propio aprendizaje?</li>
+          <li>¿Qué responsabilidad tienes tú —no la IA— en tu aprendizaje?</li>
+          <li>¿Qué has aportado tú que la IA no podría aportar?</li>
+          <li>¿Dónde ves oportunidades y riesgos en esta asignatura?</li>
+          <li>¿Cómo crees que esta tecnología impactará tu profesión?</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Caja copiable para Canvas -->
+    <span class="pill">Plantilla copiable para Canvas</span>
+    <div class="copybox" id="canvasTemplate">
+      <button class="btn small copy" onclick="copyBox('canvasTemplate')">Copiar</button>
+<span>Política de uso de inteligencia artificial en [NOMBRE DE LA ASIGNATURA]
+
+· Usos permitidos: [describir].
+· Usos no permitidos: [describir].
+· Parte que debe hacerse personalmente: [describir].
+· Cómo declarar el uso de IA: [describir formato de declaración].
+· Evidencias que se pedirán: [borradores, fuentes, defensa oral, etc.].
+· Cómo se valora: se prioriza el proceso, la autoría y el razonamiento sobre el producto final.
+
+Ante cualquier duda, consúltame antes de entregar.</span>
+    </div>
+
+    <!-- Plantilla descargable -->
+    <div style="margin-top:18px;">
+      <button class="btn accent small" onclick="downloadPolitica()">Descargar plantilla «Política breve de IA para mi asignatura»</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 9 · PREGUNTAS FRECUENTES ============ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">9 · Dudas</p>
+      <h2>Preguntas frecuentes</h2>
+      <p class="lead">Respuestas prácticas para tomar decisiones bien informadas, proteger la integridad académica y favorecer un aprendizaje más profundo. Si aún queda alguna duda, escribe a <a href="mailto:vitor.ia@ufv.es">vitor.ia@ufv.es</a>.</p>
+    </div>
+
+    <!-- Filtro por categoría -->
+    <div class="filters" id="faqFilters" role="group" aria-label="Filtrar preguntas frecuentes">
+      <span class="filter-label">Categoría:</span>
+    </div>
+
+    <div class="acc" id="faqAcc"><!-- Acordeón generado por JavaScript --></div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 10 · BIBLIOGRAFÍA ============ -->
+<section id="biblio">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">10 · Bibliografía</p>
+      <h2>Bibliografía</h2>
+      <p class="lead">Referencias en formato APA 7. Pendiente de revisar enlaces (ver tareas de producción).</p>
+    </div>
+    <ol class="biblio">
+      <li>Galán-Íñigo, A., Ruiz-Lázaro, J., &amp; Jiménez-García, E. (2025). La inteligencia artificial en los procesos de evaluación en educación superior: un análisis bibliométrico (2014-2024). <em>Bordón. Revista de Pedagogía, 77</em>(3). <a href="https://doi.org/10.13042/Bordon.2025.107797" target="_blank" rel="noopener">https://doi.org/10.13042/Bordon.2025.107797</a></li>
+      <li>Hernández León, N., &amp; Rodríguez-Conde, M. J. (2024). Inteligencia artificial aplicada a la educación y la evaluación educativa en la Universidad. <em>Revista de Educación a Distancia (RED), 24</em>(78). <a href="https://doi.org/10.6018/red.594651" target="_blank" rel="noopener">https://doi.org/10.6018/red.594651</a></li>
+      <li>OECD. (2025). <em>Using formative assessment and feedback: Unlocking high-quality teaching</em>. OECD Publishing. <a href="https://www.oecd.org/en/publications/2025/04/unlocking-high-quality-teaching_808bd876/full-report/using-formative-assessment-and-feedback_189fb6dc.html" target="_blank" rel="noopener">Enlace</a></li>
+      <li>Pérez, M., &amp; Gómez Reyes, A. B. (2025). Más allá del algoritmo: el sentido pedagógico de la evaluación en tiempos de inteligencia artificial. <em>Divulgatio. Perfiles Académicos de Posgrado</em>. <a href="https://doi.org/10.48160/25913530di28.557" target="_blank" rel="noopener">https://doi.org/10.48160/25913530di28.557</a></li>
+      <li>Perkins, M., Furze, L., Roe, J., &amp; MacVaugh, J. (2023). The AI Assessment Scale (AIAS): A framework for ethical integration of generative AI in educational assessment. <em>arXiv</em>. <a href="https://arxiv.org/abs/2312.07086" target="_blank" rel="noopener">https://arxiv.org/abs/2312.07086</a></li>
+      <li>Perkins, M., Roe, J., &amp; Furze, L. (2024). The AI Assessment Scale revisited: A framework for educational assessment. <em>arXiv</em>. <a href="https://arxiv.org/abs/2412.09029" target="_blank" rel="noopener">https://arxiv.org/abs/2412.09029</a></li>
+      <li>Ravela, P. (2024, 25 de julio). <em>Inteligencia artificial y aprendizaje: ¿qué hacemos con la evaluación?</em> <a href="https://www.pedroravela.com/post/inteligencia-artificial-evaluaci%C3%B3n-y-aprendizaje" target="_blank" rel="noopener">pedroravela.com</a></li>
+      <li>UNESCO. (s. f.). <em>La inteligencia artificial en la educación</em>. <a href="https://www.unesco.org/es/digital-education/artificial-intelligence" target="_blank" rel="noopener">unesco.org</a></li>
+      <li>UNESCO. (2024, 4 de abril). <em>Guía para el uso de IA generativa en educación e investigación</em>. <a href="https://www.unesco.org/es/articles/guia-para-el-uso-de-ia-generativa-en-educacion-e-investigacion" target="_blank" rel="noopener">unesco.org</a></li>
+      <li>Universidad del País Vasco/EHU. (2024, 15 de octubre). <em>Impacto de la inteligencia artificial en la evaluación educativa</em>. Campusa. <a href="https://www.ehu.eus/es/web/campusa/-/impacto-de-la-inteligencia-artificial-en-la-evaluacion-educativa" target="_blank" rel="noopener">ehu.eus</a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ CONTACTO FINAL ============ -->
+<section style="border-top:none;">
+  <div class="container">
+    <div class="contact">
+      <h2>¿Tienes dudas?</h2>
+      <p>Si tras consultar esta guía aún te queda alguna pregunta sobre la evaluación ante la inteligencia artificial, escríbenos.</p>
+      <a class="btn" href="mailto:vitor.ia@ufv.es">Escribir a vitor.ia@ufv.es</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    Universidad Francisco de Vitoria · Guía práctica «Repensar la evaluación en tiempos de inteligencia artificial» · V1.6
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   DATOS REUTILIZABLES
+   Edita aquí el contenido de herramientas, casos y preguntas.
+   No borres las comas ni las llaves { }.
+   ============================================================ */
+
+/* ---------- HERRAMIENTAS (Sección 6.5) ---------- */
+const HERRAMIENTAS = [
+  { cat:"Diseño", titulo:"Diseñar actividades, rúbricas y materiales",
+    tools:"ChatGPT · Claude · Gemini · Teach (M365 Copilot)",
+    uso:"Generar ideas, mejorar instrucciones, diseñar preguntas, adaptar materiales o preparar borradores de rúbricas.",
+    revisar:"Alineación con resultados de aprendizaje, nivel de exigencia y coherencia con la evaluación." },
+  { cat:"Documentos", titulo:"Trabajar con documentos y fuentes",
+    tools:"NotebookLM · Claude · ChatGPT · Gemini",
+    uso:"Resumir documentos, crear guías de estudio, comparar lecturas o generar preguntas desde fuentes aportadas.",
+    revisar:"Fidelidad a la fuente, ausencia de invenciones y adecuación al objetivo formativo." },
+  { cat:"Visuales", titulo:"Crear recursos visuales e interactivos",
+    tools:"Canva · Genially · Gamma · Napkin · Midjourney",
+    uso:"Infografías, esquemas, presentaciones, mapas conceptuales o recursos visuales de apoyo.",
+    revisar:"Precisión conceptual, accesibilidad, derechos de imagen y coherencia con la identidad UFV." },
+  { cat:"Accesibilidad", titulo:"Accesibilidad y Diseño Universal (DUA)",
+    tools:"ChatGPT · Claude · Gemini · NotebookLM · Canva",
+    uso:"Adaptar materiales: glosarios, lectura fácil, audio, esquemas, subtítulos, ejemplos alternativos o distinta complejidad lingüística.",
+    revisar:"Adaptar el acceso no significa rebajar la exigencia." },
+  { cat:"Investigación", titulo:"Investigación y actualización académica",
+    tools:"Elicit · Consensus · Scite · Perplexity",
+    uso:"Explorar literatura científica, localizar artículos, contrastar afirmaciones o preparar materiales actualizados.",
+    revisar:"Fuentes originales, existencia real de las citas, calidad académica y pertinencia disciplinar." },
+  { cat:"Vídeo y voz", titulo:"Vídeo, voz y avatares",
+    tools:"HeyGen · D-ID",
+    uso:"Píldoras explicativas, avatares docentes, vídeos introductorios o simulaciones.",
+    revisar:"Transparencia, consentimiento cuando proceda, protección de imagen; no confundir presencia docente real con representación sintética." }
+];
+
+/* ---------- CASOS DE USO (Sección 7) ----------
+   tipo: diagnóstica | formativa | sumativa | mixta
+   nivel: sin-ia | planificación | colaboración | uso-amplio | exploración
+   prioritario: true = visible siempre; false = aparece al pulsar "Ver más" */
+const CASOS = [
+  { prioritario:true, titulo:"Diagnóstico inicial de conocimientos", tipo:"diagnóstica", nivel:"planificación",
+    necesidad:"Conocer el punto de partida real del grupo.",
+    valor:"Adaptar la clase a errores, lagunas y conocimientos previos.",
+    riesgo:"Etiquetar prematuramente o convertir el diagnóstico en calificación.",
+    mitigacion:"Usarlo solo para orientar la docencia y contrastarlo con observación posterior.",
+    evidencias:"Cuestionario inicial, patrones detectados y ajuste docente.", complejidad:"Media" },
+  { prioritario:true, titulo:"Retroalimentación sobre borradores", tipo:"formativa", nivel:"colaboración",
+    necesidad:"Mejorar trabajos antes de la entrega final.",
+    valor:"Favorece revisión, metacognición y mejora del trabajo.",
+    riesgo:"Que el alumno acepte cambios sin comprenderlos.",
+    mitigacion:"Exigir borrador, feedback, cambios aplicados y justificación.",
+    evidencias:"Versión inicial, feedback, versión final y reflexión breve.", complejidad:"Media" },
+  { prioritario:true, titulo:"Errores y aciertos comunes del grupo", tipo:"formativa", nivel:"colaboración",
+    necesidad:"Devolver al grupo patrones útiles tras una actividad.",
+    valor:"Ayuda a ajustar explicaciones y reforzar contenidos.",
+    riesgo:"Perder matices o comprometer privacidad.",
+    mitigacion:"Anonimizar, usar IA solo para tendencias y revisar conclusiones manualmente.",
+    evidencias:"Patrones agregados, explicación posterior y mejora aplicada.", complejidad:"Media" },
+  { prioritario:true, titulo:"Laboratorio de verificación y pensamiento crítico", tipo:"mixta", nivel:"colaboración",
+    necesidad:"Entrenar verificación, detección de errores, sesgos y fuentes falsas.",
+    valor:"Convierte la IA en objeto de análisis, no solo en herramienta.",
+    riesgo:"Quedarse en «la IA se equivoca» sin desarrollar criterio riguroso.",
+    mitigacion:"Exigir fuentes contrastables, razonamiento explícito y conclusión propia.",
+    evidencias:"Errores detectados, fuentes verificadas y argumentación final.", complejidad:"Media" },
+  { prioritario:true, titulo:"Simulaciones profesionales y role-play", tipo:"mixta", nivel:"exploración",
+    necesidad:"Practicar toma de decisiones y juicio situado.",
+    valor:"Ensayar escenarios complejos antes de la práctica real.",
+    riesgo:"Simulaciones pobres, estereotipadas o sesgadas.",
+    mitigacion:"Diseñar escenarios desde el profesor y cerrar con reflexión crítica.",
+    evidencias:"Interacción, decisión, justificación y reflexión posterior.", complejidad:"Alta" },
+  { prioritario:true, titulo:"Evaluación del proceso por el hilo de interacción", tipo:"mixta", nivel:"colaboración",
+    necesidad:"Valorar cómo piensa, decide, corrige y verifica el alumno.",
+    valor:"Hace visible razonamiento, criterio, iteración y uso crítico de IA.",
+    riesgo:"Convertir el seguimiento en vigilancia excesiva.",
+    mitigacion:"Explicar previamente qué se revisa, para qué y con qué criterios.",
+    evidencias:"Hilo seleccionado, reflexión del alumno y conexión con la rúbrica.", complejidad:"Media" },
+
+  /* --- Casos adicionales (aparecen con "Ver más casos") --- */
+  { prioritario:false, titulo:"Cuestionarios y participación en clase", tipo:"formativa", nivel:"planificación",
+    necesidad:"Activar y comprobar participación en tiempo real.",
+    valor:"Aumenta implicación y permite ajustar el ritmo.",
+    riesgo:"Reducir la comprensión a respuesta rápida.",
+    mitigacion:"Alternar con preguntas abiertas y discusión.",
+    evidencias:"Resultados de aula y ajuste posterior.", complejidad:"Baja" },
+  { prioritario:false, titulo:"Tutor socrático de conceptos difíciles", tipo:"formativa", nivel:"colaboración",
+    necesidad:"Acompañar la comprensión de conceptos complejos.",
+    valor:"Práctica guiada con preguntas en lugar de respuestas cerradas.",
+    riesgo:"Que el alumno busque la solución directa.",
+    mitigacion:"Configurar el uso como diálogo de preguntas, no de respuestas.",
+    evidencias:"Registro de avance y autoexplicación final.", complejidad:"Media" },
+  { prioritario:false, titulo:"Asistente pedagógico del profesor", tipo:"diagnóstica", nivel:"planificación",
+    necesidad:"Reducir carga operativa del diseño docente.",
+    valor:"Más tiempo para acompañamiento y criterio.",
+    riesgo:"Aceptar propuestas sin revisión crítica.",
+    mitigacion:"Revisar y adaptar siempre a la asignatura.",
+    evidencias:"Materiales revisados y adaptados.", complejidad:"Baja" },
+  { prioritario:false, titulo:"Asistente personalizado para ejercicios", tipo:"formativa", nivel:"colaboración",
+    necesidad:"Ofrecer práctica adicional ajustada.",
+    valor:"Refuerzo individualizado sin perfilar datos personales.",
+    riesgo:"Sustituir estudio y lectura personal.",
+    mitigacion:"Enmarcarlo como apoyo, no como sustituto.",
+    evidencias:"Ejercicios resueltos y autoevaluación.", complejidad:"Media" },
+  { prioritario:false, titulo:"Práctica adaptativa y repetición espaciada", tipo:"formativa", nivel:"colaboración",
+    necesidad:"Consolidar aprendizaje a lo largo del tiempo.",
+    valor:"Mejor retención mediante repaso distribuido.",
+    riesgo:"Mecanización sin comprensión.",
+    mitigacion:"Incluir tareas de transferencia y explicación.",
+    evidencias:"Progreso y pruebas de transferencia.", complejidad:"Media" },
+  { prioritario:false, titulo:"Banco de preguntas e integración en Canvas", tipo:"sumativa", nivel:"planificación",
+    necesidad:"Generar variantes de evaluación equivalentes.",
+    valor:"Ahorra tiempo y reduce copia entre versiones.",
+    riesgo:"Preguntas de baja calidad o ambiguas.",
+    mitigacion:"Revisar cada ítem y su alineación con objetivos.",
+    evidencias:"Banco revisado e integrado.", complejidad:"Media" },
+  { prioritario:false, titulo:"Co-creación de proyectos con IA", tipo:"mixta", nivel:"exploración",
+    necesidad:"Evaluar uso profesional y creativo de la IA.",
+    valor:"Desarrolla criterio, dirección y verificación.",
+    riesgo:"Pérdida de agencia y autoría del alumno.",
+    mitigacion:"Exigir declaración, justificación y aportación personal.",
+    evidencias:"Proyecto, declaración de uso y defensa.", complejidad:"Alta" }
+];
+
+/* ---------- PREGUNTAS FRECUENTES (Sección 9) ----------
+   cat: preparacion | evaluacion | privacidad | alumno | sospechas | comunicacion
+   corta = respuesta corta; profesor = qué puede hacer el profesor; precaucion = precaución clave */
+const FAQ = [
+  { cat:"preparacion", p:"¿Puedo usar IA para preparar mis clases?",
+    corta:"Sí. Puedes generar ideas, ejemplos, esquemas, actividades, casos, presentaciones o materiales de apoyo.",
+    profesor:"Revisa lo que produce, adáptalo a tu estilo docente y comprueba que responde al objetivo de aprendizaje.",
+    precaucion:"Lo generado es un borrador, no un material final." },
+  { cat:"preparacion", p:"¿Puedo usar IA para diseñar actividades, exámenes o rúbricas?",
+    corta:"Sí, como apoyo: redactar preguntas, crear variantes, detectar ambigüedades o mejorar criterios.",
+    profesor:"Decide tú qué debe evaluarse y qué nivel de exigencia corresponde.",
+    precaucion:"La IA no decide qué se evalúa: esa decisión es docente." },
+  { cat:"evaluacion", p:"¿Puede la IA corregir o calificar trabajos?",
+    corta:"No debe sustituir al profesor. Puede señalar incoherencias, repeticiones, lagunas o posibles mejoras.",
+    profesor:"Usa sus observaciones como insumo, nunca como nota.",
+    precaucion:"La decisión evaluadora corresponde siempre al docente." },
+  { cat:"privacidad", p:"¿Puedo subir trabajos de alumnos a una herramienta de IA?",
+    corta:"Solo si están completamente anonimizados y el uso es necesario y proporcionado.",
+    profesor:"Elimina nombres, imágenes, audios, vídeos, datos personales y referencias identificables.",
+    precaucion:"Si no puedes garantizar la anonimización, no los subas." },
+  { cat:"sospechas", p:"¿Puedo usar detectores de IA como prueba de que lo hizo ChatGPT?",
+    corta:"No como prueba suficiente ni como base para una decisión académica.",
+    profesor:"Si hay dudas, pide proceso, borradores, defensa oral breve o preguntas que exijan comprensión real.",
+    precaucion:"Los detectores fallan y generan falsos positivos y negativos." },
+  { cat:"alumno", p:"¿Puedo pedir a mis alumnos que usen IA?",
+    corta:"Sí, si tiene sentido pedagógico y se explica con claridad.",
+    profesor:"Indica para qué se usa, con qué límites, qué deben declarar y qué parte debe ser personal.",
+    precaucion:"No exijas herramientas que obliguen a crear cuentas o subir datos no necesarios." },
+  { cat:"evaluacion", p:"¿Puedo prohibir el uso de IA en determinadas tareas?",
+    corta:"Sí. Si la actividad evalúa una competencia que la IA puede sustituir, conviene limitarla o excluirla.",
+    profesor:"Reserva sin IA: razonamiento propio, escritura inicial, lectura crítica, síntesis, defensa oral o práctica supervisada.",
+    precaucion:"Hazlo explícito antes de la entrega." },
+  { cat:"evaluacion", p:"¿Puedo autorizar IA en actividades evaluables?",
+    corta:"Depende del objetivo de aprendizaje. En formativa puede ser útil; en sumativa debe estar muy justificado.",
+    profesor:"Indica siempre el nivel permitido: sin IA, planificación, colaboración, uso amplio o exploración.",
+    precaucion:"La IA no debe interferir con lo que se quiere evaluar." },
+  { cat:"evaluacion", p:"¿Puedo usar IA para dar retroalimentación personalizada?",
+    corta:"Sí, como borrador o apoyo.",
+    profesor:"Revisa, adapta a la rúbrica y añade tu criterio docente.",
+    precaucion:"No entregues retroalimentación automática sin supervisión." },
+  { cat:"alumno", p:"¿Puedo usar IA en tutorías o acompañamiento académico?",
+    corta:"Sí: preparar preguntas, explicaciones alternativas, itinerarios de mejora o recursos.",
+    profesor:"El acompañamiento lo haces tú; la IA prepara material.",
+    precaucion:"La IA no sustituye el vínculo educativo ni la interpretación personal." },
+  { cat:"alumno", p:"¿Puedo mostrar a mis alumnos cómo usar IA?",
+    corta:"Sí, es recomendable: forma parte de su alfabetización académica y profesional.",
+    profesor:"Ayúdales a evaluar calidad, detectar errores y sesgos, contrastar fuentes y distinguir apoyo de sustitución.",
+    precaucion:"Apoyo legítimo no es lo mismo que sustitución del pensamiento." },
+  { cat:"alumno", p:"¿Puedo pedirles que analicen un texto generado por IA?",
+    corta:"Sí, es una actividad formativa muy útil.",
+    profesor:"Corregir, contrastar y mejorar respuestas de IA desarrolla pensamiento crítico y verificación.",
+    precaucion:"Exige razonamiento explícito y conclusión propia." },
+  { cat:"privacidad", p:"¿Qué herramientas son seguras?",
+    corta:"Usa preferentemente herramientas institucionales, autorizadas o recomendadas por la universidad.",
+    profesor:"Comprueba la política de privacidad antes de usar una plataforma.",
+    precaucion:"Evita plataformas opacas o que pidan datos personales innecesarios." },
+  { cat:"sospechas", p:"¿Qué hago si sospecho un uso indebido de IA?",
+    corta:"No empieces por un detector. Empieza por verificar aprendizaje.",
+    profesor:"Pide explicación oral breve, proceso, borradores, ampliación personalizada o preguntas sobre decisiones.",
+    precaucion:"Si la sospecha persiste, sigue el procedimiento académico habitual." },
+  { cat:"comunicacion", p:"¿Cómo explico todo esto al inicio de curso?",
+    corta:"Incluye una política de uso de IA en la asignatura y coméntala en clase.",
+    profesor:"Indica usos permitidos y no permitidos, cómo declarar, qué tareas son personales y qué evidencias se pedirán.",
+    precaucion:"Explica también las consecuencias de un uso inadecuado." }
+];
+
+/* Etiquetas legibles para las categorías de FAQ y filtros */
+const FAQ_CATS = { preparacion:"Preparación docente", evaluacion:"Evaluación y calificación",
+  privacidad:"Privacidad y datos", alumno:"Uso por el alumno", sospechas:"Sospechas de uso indebido",
+  comunicacion:"Comunicación inicio de curso" };
+const CASE_TIPOS = ["diagnóstica","formativa","sumativa","mixta"];
+const CASE_NIVELES = ["sin-ia","planificación","colaboración","uso-amplio","exploración"];
+const NIVEL_LABEL = { "sin-ia":"Sin IA","planificación":"Planificación","colaboración":"Colaboración",
+  "uso-amplio":"Uso amplio","exploración":"Exploración" };
+
+/* ============================================================
+   LÓGICA DE LA INTERFAZ (no necesitas tocar esto)
+   ============================================================ */
+
+/* --- Navegación móvil --- */
+function toggleNav(){
+  const links=document.getElementById('navLinks');
+  const btn=document.querySelector('.nav-toggle');
+  const open=links.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open);
+}
+document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{
+  document.getElementById('navLinks').classList.remove('open');
+}));
+
+/* --- Toast de aviso --- */
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+/* --- Copiar texto al portapapeles (con alternativa antigua) --- */
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast('Copiado al portapapeles')).catch(()=>fallbackCopy(text));
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta);
+  ta.select(); try{document.execCommand('copy'); toast('Copiado');}catch(e){toast('No se pudo copiar');}
+  document.body.removeChild(ta);
+}
+function copyBox(id){
+  const el=document.getElementById(id);
+  const text=el.querySelector('span').innerText;
+  copyText(text);
+}
+
+/* --- Descargar un archivo de texto (plantillas) --- */
+function downloadFile(filename, content){
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url); toast('Descarga iniciada');
+}
+
+/* --- Checklist (Sección 2) --- */
+function copyChecklist(){
+  const items=[...document.querySelectorAll('#checklist .check-item')];
+  let txt="Antes de cambiar nada: 5 preguntas para repensar mi evaluación\n\n";
+  items.forEach(it=>{
+    const cb=it.querySelector('input'); if(!cb) return;
+    const label=it.querySelector('label').innerText.replace(/\s+/g,' ').trim();
+    txt+=(cb.checked?"[x] ":"[ ] ")+label+"\n";
+  });
+  copyText(txt);
+}
+function resetChecklist(){
+  document.querySelectorAll('#checklist input[type=checkbox]').forEach(cb=>cb.checked=false);
+  toast('Checklist reiniciado');
+}
+
+/* --- Plantilla de rúbrica descargable (Sección 5) ---
+   Edita este texto para cambiar el contenido de la plantilla. */
+function downloadRubrica(){
+  const txt=
+`RÚBRICA DE TRAZABILIDAD, AUTORÍA Y USO RESPONSABLE DE IA — UFV
+
+Lógica de pesos:
+- Producto final: menor peso.
+- Proceso, verificación, declaración de uso y defensa: mayor peso.
+
+CRITERIO 1. TRANSPARENCIA Y ATRIBUCIÓN
+Declara qué hizo la IA y qué hizo el alumno.
+Niveles: Insuficiente / Suficiente / Notable / Excelente.
+
+CRITERIO 2. VERIFICACIÓN DE ERRORES O ALUCINACIONES
+Contrasta fuentes, detecta sesgos y corrige salidas dudosas.
+Niveles: Insuficiente / Suficiente / Notable / Excelente.
+
+CRITERIO 3. DEFENSA Y PERSONALIZACIÓN
+Explica oralmente sus decisiones y conecta el trabajo con su contexto.
+Niveles: Insuficiente / Suficiente / Notable / Excelente.
+
+CRITERIO 4. PROCESO ITERATIVO
+Muestra evolución, borradores, cambios y mejora del pensamiento.
+Niveles: Insuficiente / Suficiente / Notable / Excelente.
+
+Nota: si hay dudas razonables sobre la autoría, puede solicitarse una defensa
+oral conforme a la guía docente, como oportunidad de verificar aprendizaje.`;
+  downloadFile("rubrica-trazabilidad-autoria-IA-UFV.txt", txt);
+}
+
+/* --- Plantilla de política descargable (Sección 8) --- */
+function downloadPolitica(){
+  const txt=
+`POLÍTICA BREVE DE INTELIGENCIA ARTIFICIAL PARA MI ASIGNATURA
+
+Asignatura: ____________________________
+Profesor/a: ____________________________
+
+1. Usos permitidos de IA:
+2. Usos NO permitidos de IA:
+3. Parte que debe hacerse personalmente:
+4. Cómo debe declararse el uso de IA:
+5. Evidencias que se pedirán:
+6. Cómo se valora (proceso vs. resultado):
+7. Consecuencias de un uso inadecuado:
+
+Contacto de dudas: vitor.ia@ufv.es`;
+  downloadFile("politica-IA-asignatura-UFV.txt", txt);
+}
+
+/* --- Render de herramientas (Sección 6.5) con filtro --- */
+let toolFilter="todas";
+function renderToolFilters(){
+  const cats=["todas",...new Set(HERRAMIENTAS.map(h=>h.cat))];
+  const cont=document.getElementById('toolFilters');
+  cats.forEach(c=>{
+    const b=document.createElement('button');
+    b.className='chip'+(c===toolFilter?' active':''); b.textContent=(c==='todas'?'Todas':c);
+    b.onclick=()=>{toolFilter=c; document.querySelectorAll('#toolFilters .chip').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderTools();};
+    cont.appendChild(b);
+  });
+}
+function renderTools(){
+  const grid=document.getElementById('toolGrid'); grid.innerHTML='';
+  HERRAMIENTAS.filter(h=>toolFilter==='todas'||h.cat===toolFilter).forEach(h=>{
+    const d=document.createElement('div'); d.className='card';
+    d.innerHTML=`<span class="num">${h.cat}</span><h3>${h.titulo}</h3>
+      <p class="small"><b>Herramientas:</b> ${h.tools}</p>
+      <p class="small"><b>Uso:</b> ${h.uso}</p>
+      <p class="small" style="color:var(--ufv-muted)"><b>Revisar siempre:</b> ${h.revisar}</p>`;
+    grid.appendChild(d);
+  });
+}
+
+/* --- Render de casos (Sección 7) con doble filtro y "ver más" --- */
+let caseType="todos", caseLevel="todos", showAllCases=false;
+function renderCaseFilters(){
+  const tCont=document.getElementById('caseTypeFilters');
+  ["todos",...CASE_TIPOS].forEach(t=>{
+    const b=document.createElement('button'); b.className='chip'+(t==='todos'?' active':'');
+    b.textContent=(t==='todos'?'Todos':t.charAt(0).toUpperCase()+t.slice(1));
+    b.onclick=()=>{caseType=t; document.querySelectorAll('#caseTypeFilters .chip').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderCases();};
+    tCont.appendChild(b);
+  });
+  const lCont=document.getElementById('caseLevelFilters');
+  ["todos",...CASE_NIVELES].forEach(n=>{
+    const b=document.createElement('button'); b.className='chip'+(n==='todos'?' active':'');
+    b.textContent=(n==='todos'?'Todos':NIVEL_LABEL[n]);
+    b.onclick=()=>{caseLevel=n; document.querySelectorAll('#caseLevelFilters .chip').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderCases();};
+    lCont.appendChild(b);
+  });
+}
+function renderCases(){
+  const grid=document.getElementById('caseGrid'); grid.innerHTML='';
+  const filtering=(caseType!=='todos'||caseLevel!=='todos');
+  let list=CASOS.filter(c=>(caseType==='todos'||c.tipo===caseType)&&(caseLevel==='todos'||c.nivel===caseLevel));
+  if(!filtering && !showAllCases){ list=list.filter(c=>c.prioritario); }
+  if(list.length===0){ grid.innerHTML='<p class="small" style="color:var(--ufv-muted)">No hay casos con esos filtros.</p>'; }
+  list.forEach(c=>{
+    const d=document.createElement('div'); d.className='card case';
+    d.innerHTML=`<div class="meta"><span>${c.tipo}</span><span>${NIVEL_LABEL[c.nivel]||c.nivel}</span><span>Complejidad: ${c.complejidad}</span></div>
+      <h3>${c.titulo}</h3>
+      <dl>
+        <dt>Necesidad</dt><dd>${c.necesidad}</dd>
+        <dt>Valor pedagógico</dt><dd>${c.valor}</dd>
+        <dt>Riesgo principal</dt><dd>${c.riesgo}</dd>
+        <dt>Mitigación</dt><dd>${c.mitigacion}</dd>
+        <dt>Evidencias</dt><dd>${c.evidencias}</dd>
+      </dl>`;
+    grid.appendChild(d);
+  });
+  // El botón "ver más" se oculta cuando hay filtros activos
+  const btn=document.getElementById('moreCases');
+  btn.style.display = filtering ? 'none' : 'inline-block';
+  btn.textContent = showAllCases ? 'Ver menos casos' : 'Ver más casos';
+}
+function toggleMoreCases(){ showAllCases=!showAllCases; renderCases(); }
+
+/* --- Render de FAQ (Sección 9): acordeón con filtro y 3 capas --- */
+let faqFilter="todas";
+function renderFaqFilters(){
+  const cont=document.getElementById('faqFilters');
+  const cats=["todas",...Object.keys(FAQ_CATS)];
+  cats.forEach(c=>{
+    const b=document.createElement('button'); b.className='chip'+(c==='todas'?' active':'');
+    b.textContent=(c==='todas'?'Todas':FAQ_CATS[c]);
+    b.onclick=()=>{faqFilter=c; document.querySelectorAll('#faqFilters .chip').forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderFaq();};
+    cont.appendChild(b);
+  });
+}
+function renderFaq(){
+  const acc=document.getElementById('faqAcc'); acc.innerHTML='';
+  FAQ.filter(f=>faqFilter==='todas'||f.cat===faqFilter).forEach((f,i)=>{
+    const item=document.createElement('div'); item.className='acc-item';
+    const pid='faqp'+i;
+    item.innerHTML=`
+      <button class="acc-btn" aria-expanded="false" aria-controls="${pid}">
+        <span>${f.p}</span><span class="ico" aria-hidden="true">+</span>
+      </button>
+      <div class="acc-panel" id="${pid}" role="region">
+        <p>${f.corta}</p>
+        <div class="layer"><b>Qué puede hacer el profesor</b>${f.profesor}</div>
+        <div class="layer"><b>Precaución clave</b>${f.precaucion}</div>
+      </div>`;
+    const btn=item.querySelector('.acc-btn'), panel=item.querySelector('.acc-panel');
+    btn.addEventListener('click',()=>{
+      const open=panel.classList.toggle('open');
+      btn.setAttribute('aria-expanded',open);
+      btn.querySelector('.ico').textContent=open?'+':'+'; // el giro lo hace el CSS
+    });
+    acc.appendChild(item);
+  });
+}
+
+/* --- Inicialización --- */
+renderToolFilters(); renderTools();
+renderCaseFilters(); renderCases();
+renderFaqFilters(); renderFaq();
+</script>
+</body>
+</html>
